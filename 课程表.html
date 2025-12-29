@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>邢付强的课程表 🦋</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Comic+Neue:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --pink-light: #FFE5F1;
+            --pink-medium: #FFB6D9;
+            --pink-dark: #FF69B4;
+            --purple-light: #E5D4FF;
+            --purple-medium: #C4A7E7;
+            --lavender: #E6E6FA;
+            --mint: #B2F5EA;
+            --peach: #FFDAB9;
+            --yellow-light: #FFF9C4;
+            --text-dark: #5A3E5E;
+            --text-light: #8B7A8E;
+            --white: #FFFFFF;
+            --shadow: 0 8px 32px rgba(255, 105, 180, 0.2);
+            --shadow-hover: 0 12px 48px rgba(255, 105, 180, 0.3);
+        }
+
+        body {
+            font-family: 'Noto Sans SC', 'Comic Neue', sans-serif;
+            background: linear-gradient(135deg, #FFE5F1 0%, #E5D4FF 50%, #B2F5EA 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 可爱装饰元素 */
+        .decoration {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .butterfly {
+            font-size: 2rem;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .butterfly:nth-child(1) {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .butterfly:nth-child(2) {
+            top: 20%;
+            right: 8%;
+            animation-delay: 1s;
+        }
+
+        .butterfly:nth-child(3) {
+            bottom: 15%;
+            left: 10%;
+            animation-delay: 2s;
+        }
+
+        .butterfly:nth-child(4) {
+            bottom: 25%;
+            right: 5%;
+            animation-delay: 3s;
+        }
+
+        .flower {
+            font-size: 1.5rem;
+            animation: spin 20s linear infinite;
+        }
+
+        .flower:nth-child(5) {
+            top: 30%;
+            left: 3%;
+        }
+
+        .flower:nth-child(6) {
+            top: 60%;
+            right: 4%;
+        }
+
+        .flower:nth-child(7) {
+            bottom: 10%;
+            left: 15%;
+        }
+
+        .star {
+            font-size: 1.2rem;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        .star:nth-child(8) {
+            top: 15%;
+            left: 20%;
+            animation-delay: 0.5s;
+        }
+
+        .star:nth-child(9) {
+            top: 50%;
+            right: 15%;
+            animation-delay: 1s;
+        }
+
+        .star:nth-child(10) {
+            bottom: 20%;
+            right: 20%;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1rem;
+            animation: fadeInDown 0.8s ease;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 229, 241, 0.9) 100%);
+            padding: 1rem;
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            border: 3px solid var(--pink-medium);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FF69B4 0%, #C4A7E7 50%, #FF69B4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            font-family: 'Comic Neue', 'Noto Sans SC', sans-serif;
+        }
+
+        .owner-name {
+            font-size: 1.3rem;
+            color: var(--pink-dark);
+            font-weight: 600;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 2rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        /* 配置面板 */
+        .config-panel {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 229, 241, 0.95) 100%);
+            border: 3px solid var(--pink-medium);
+            border-radius: 30px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .config-panel:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        .config-panel h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--pink-dark);
+            font-family: 'Comic Neue', 'Noto Sans SC', sans-serif;
+            text-align: center;
+        }
+
+        .day-selector {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .day-btn {
+            padding: 0.8rem 0.3rem;
+            border: 2px solid var(--pink-medium);
+            background: white;
+            color: var(--text-dark);
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .day-btn:hover {
+            background: var(--pink-light);
+            border-color: var(--pink-dark);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+        }
+
+        .day-btn.active {
+            background: linear-gradient(135deg, var(--pink-dark) 0%, var(--purple-medium) 100%);
+            border-color: var(--pink-dark);
+            color: white;
+            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.4);
+            transform: scale(1.1);
+        }
+
+        .day-btn.active::after {
+            content: '💖';
+            position: absolute;
+            top: -10px;
+            right: -5px;
+            font-size: 1rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 2px dashed var(--pink-medium);
+        }
+
+        .form-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--pink-dark);
+            font-family: 'Comic Neue', 'Noto Sans SC', sans-serif;
+            text-align: center;
+        }
+
+        .course-input {
+            margin-bottom: 1rem;
+        }
+
+        .course-input label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .course-input input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            background: white;
+            border: 2px solid var(--pink-medium);
+            border-radius: 15px;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        .course-input input:focus {
+            outline: none;
+            border-color: var(--pink-dark);
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .toggle-label input:checked+.toggle-slider {
+            background: linear-gradient(135deg, var(--pink-dark) 0%, var(--purple-medium) 100%);
+        }
+
+        .toggle-label input:checked+.toggle-slider::before {
+            transform: translateX(27px);
+        }
+
+        .toggle-text {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        #afternoonCourses.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* 激励语输入 */
+        .motivation-section {
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 2px dashed var(--mint);
+        }
+
+        .motivation-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--pink-dark);
+            font-family: 'Comic Neue', 'Noto Sans SC', sans-serif;
+            text-align: center;
+        }
+
+        .motivation-input {
+            margin-bottom: 0;
+        }
+
+        .motivation-input label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .motivation-input textarea {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            background: white;
+            border: 2px solid var(--mint);
+            border-radius: 15px;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans SC', sans-serif;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .motivation-input textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+            background: rgba(178, 245, 234, 0.2);
+            box-shadow: 0 0 0 4px rgba(79, 172, 254, 0.2);
+            transform: scale(1.02);
+        }
+
+        .motivation-input textarea::placeholder {
+            color: var(--text-light);
+        }
+
+        .motivation-controls {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-start;
+        }
+
+        .motivation-controls textarea {
+            flex: 1;
+        }
+
+        .dice-btn {
+            padding: 0.9rem 1rem;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border: 2px solid #FFB6D9;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
+            min-width: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dice-btn:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .dice-btn:active {
+            animation: diceRoll 0.5s ease;
+        }
+
+        @keyframes diceRoll {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(90deg) scale(1.1);
+            }
+
+            50% {
+                transform: rotate(180deg) scale(1.2);
+            }
+
+            75% {
+                transform: rotate(270deg) scale(1.1);
+            }
+
+            100% {
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        /* 按钮 */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.4);
+        }
+
+        .btn-save:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(255, 105, 180, 0.6);
+        }
+
+        .btn-clear {
+            background: linear-gradient(135deg, #C4A7E7 0%, #9370DB 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(196, 167, 231, 0.4);
+        }
+
+        .btn-clear:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(196, 167, 231, 0.6);
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, #FFB6D9 0%, #FF69B4 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(255, 182, 217, 0.4);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-print:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(255, 182, 217, 0.6);
+        }
+
+        /* 预览面板 */
+        .preview-panel {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(229, 212, 255, 0.95) 100%);
+            border: 3px solid var(--purple-medium);
+            border-radius: 30px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .preview-header h2 {
+            font-size: 1.5rem;
+            color: var(--purple-medium);
+            font-family: 'Comic Neue', 'Noto Sans SC', sans-serif;
+        }
+
+        /* 课程表样式 */
+        .schedule-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .schedule-table th,
+        .schedule-table td {
+            padding: 1rem;
+            text-align: center;
+            border: 2px solid var(--pink-light);
+        }
+
+        .schedule-table th {
+            background: linear-gradient(135deg, var(--pink-medium) 0%, var(--purple-light) 100%);
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .schedule-table td {
+            background: white;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .schedule-table td:hover {
+            background: var(--pink-light);
+            transform: scale(1.05);
+            box-shadow: 0 3px 10px rgba(255, 105, 180, 0.2);
+        }
+
+        .schedule-table td.rest-cell {
+            background: linear-gradient(135deg, #FFE5F1 0%, #FFB6D9 100%);
+            color: var(--pink-dark);
+            font-weight: 700;
+        }
+
+        .schedule-table td.course-cell {
+            background: linear-gradient(135deg, #E5D4FF 0%, #C4A7E7 100%);
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .schedule-table td.empty-cell {
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        /* 打印样式 */
+        .print-only {
+            display: none;
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+
+            .container {
+                display: none;
+            }
+
+            .decoration {
+                display: none;
+            }
+
+            .print-only {
+                display: block;
+                padding: 15mm;
+            }
+
+            .print-header {
+                text-align: center;
+                margin-bottom: 20px;
+                border-bottom: 3px solid #FF69B4;
+                padding-bottom: 15px;
+                position: relative;
+            }
+
+            .print-header h1 {
+                font-size: 26pt;
+                color: #FF69B4;
+                margin-bottom: 8px;
+                font-family: 'Comic Neue', 'Noto Sans SC', sans-serif;
+            }
+
+            .print-owner {
+                font-size: 14pt;
+                color: #C4A7E7;
+                font-weight: bold;
+                margin: 8px 0;
+            }
+
+            .print-decorations {
+                position: absolute;
+                font-size: 20pt;
+            }
+
+            .print-decorations.left {
+                left: 0;
+                top: 0;
+            }
+
+            .print-decorations.right {
+                right: 0;
+                top: 0;
+            }
+
+            .schedule-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+                page-break-inside: avoid;
+            }
+
+            .schedule-table th,
+            .schedule-table td {
+                border: 2px solid #FFB6D9;
+                padding: 10px 5px;
+                text-align: center;
+            }
+
+            .schedule-table th {
+                background: #FFE5F1 !important;
+                font-weight: bold;
+                font-size: 11pt;
+                color: #5A3E5E !important;
+            }
+
+            .schedule-table td {
+                font-size: 10pt;
+                min-height: 35px;
+                background: white !important;
+                color: #5A3E5E !important;
+            }
+
+            .schedule-table td.rest-cell {
+                background: #FFE5F1 !important;
+                color: #FF69B4 !important;
+                font-weight: bold;
+            }
+
+            .schedule-table td.course-cell {
+                background: #E5D4FF !important;
+                color: #5A3E5E !important;
+                font-weight: 600;
+            }
+
+            .print-footer {
+                margin-top: 15px;
+                text-align: center;
+                font-size: 11pt;
+                color: #FF69B4;
+                border-top: 2px solid #FFB6D9;
+                padding-top: 10px;
+                font-weight: bold;
+            }
+
+            @page {
+                size: A4;
+                margin: 12mm;
+            }
+        }
+
+        /* 课程选择弹窗 */
+        .course-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .course-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .course-modal {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 229, 241, 0.98) 100%);
+            border: 3px solid var(--pink-medium);
+            border-radius: 30px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.4);
+            transform: scale(0.8) translateY(-20px);
+            transition: all 0.3s ease;
+        }
+
+        .course-modal-overlay.active .course-modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .course-modal-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px dashed var(--pink-medium);
+        }
+
+        .course-modal-header h3 {
+            font-size: 1.4rem;
+            color: var(--pink-dark);
+            font-family: 'Comic Neue', 'Noto Sans SC', sans-serif;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-modal-header p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .course-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .course-option {
+            padding: 0.8rem 0.5rem;
+            background: white;
+            border: 2px solid var(--pink-light);
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .course-option:hover {
+            background: var(--pink-light);
+            border-color: var(--pink-dark);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+        }
+
+        .course-option.rest-option {
+            background: linear-gradient(135deg, #FFE5F1 0%, #FFB6D9 100%);
+            border-color: var(--pink-medium);
+        }
+
+        .course-option.rest-option:hover {
+            background: linear-gradient(135deg, #FFB6D9 0%, #FF69B4 100%);
+            color: white;
+        }
+
+        .course-modal-custom {
+            margin-bottom: 1.5rem;
+        }
+
+        .course-modal-custom label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .course-modal-custom input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            background: white;
+            border: 2px solid var(--pink-medium);
+            border-radius: 15px;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        .course-modal-custom input:focus {
+            outline: none;
+            border-color: var(--pink-dark);
+            box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.2);
+        }
+
+        .course-modal-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .course-modal-buttons .btn {
+            flex: 1;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.4);
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(255, 105, 180, 0.6);
+        }
+
+        .btn-cancel {
+            background: linear-gradient(135deg, #C4A7E7 0%, #9370DB 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(196, 167, 231, 0.4);
+        }
+
+        .btn-cancel:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(196, 167, 231, 0.6);
+        }
+
+        .btn-clear-cell {
+            background: linear-gradient(135deg, #FFB6D9 0%, #FF69B4 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 182, 217, 0.4);
+        }
+
+        .btn-clear-cell:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 182, 217, 0.6);
+        }
+
+        /* 可点击的单元格样式 */
+        .schedule-table td.clickable-cell {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .schedule-table td.clickable-cell::after {
+            content: '✏️';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            font-size: 0.7rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .schedule-table td.clickable-cell:hover::after {
+            opacity: 0.6;
+        }
+
+        .schedule-table td.clickable-cell:hover {
+            background: linear-gradient(135deg, #FFE5F1 0%, #E5D4FF 100%) !important;
+            transform: scale(1.08);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+            z-index: 1;
+        }
+
+        /* 动画 */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .config-panel {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1rem;
+            }
+
+            .day-selector {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .preview-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .butterfly,
+            .flower,
+            .star {
+                font-size: 1rem;
+            }
+        }
+
+        /* 通知动画 */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 可爱装饰元素 -->
+    <div class="decoration butterfly">🦋</div>
+    <div class="decoration butterfly">🦋</div>
+    <div class="decoration butterfly">🦋</div>
+    <div class="decoration butterfly">🦋</div>
+    <div class="decoration flower">🌸</div>
+    <div class="decoration flower">🌺</div>
+    <div class="decoration flower">🌼</div>
+    <div class="decoration star">⭐</div>
+    <div class="decoration star">✨</div>
+    <div class="decoration star">💫</div>
+
+    <div class="container">
+        <header class="header">
+            <h1>🌈 我的课程表 🌈</h1>
+            <div class="owner-name">
+                <span>👧</span>
+                <span>邢付强</span>
+                <span>🎀</span>
+            </div>
+            <p class="subtitle">让学习变得更有趣 ✨</p>
+        </header>
+
+        <div class="main-content">
+            <!-- 配置面板 -->
+            <div class="config-panel">
+                <h2>📝 课程配置 🎨</h2>
+                <div class="day-selector">
+                    <button class="day-btn active" data-day="monday">周一</button>
+                    <button class="day-btn" data-day="tuesday">周二</button>
+                    <button class="day-btn" data-day="wednesday">周三</button>
+                    <button class="day-btn" data-day="thursday">周四</button>
+                    <button class="day-btn" data-day="friday">周五</button>
+                    <button class="day-btn" data-day="saturday">周六</button>
+                    <button class="day-btn" data-day="sunday">周日</button>
+                </div>
+
+                <div class="config-form">
+                    <div class="form-section">
+                        <h3>🌅 上午课程</h3>
+                        <div class="course-input">
+                            <label>第一节 📚</label>
+                            <input type="text" id="morning1" list="courseList" placeholder="例如：语文">
+                        </div>
+                        <div class="course-input">
+                            <label>第二节 ✏️</label>
+                            <input type="text" id="morning2" list="courseList" placeholder="例如：数学">
+                        </div>
+                        <div class="course-input">
+                            <label>第三节 📖</label>
+                            <input type="text" id="morning3" list="courseList" placeholder="例如：英语">
+                        </div>
+                        <div class="course-input">
+                            <label>第四节 🔬</label>
+                            <input type="text" id="morning4" list="courseList" placeholder="例如：科学">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>🌆 下午课程</h3>
+                        <div class="rest-toggle">
+                            <label class="toggle-label">
+                                <input type="hidden" id="afternoonRest">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-text"></span>
+                            </label>
+                        </div>
+                        <div id="afternoonCourses">
+                            <div class="course-input">
+                                <label>第五节 🎨</label>
+                                <input type="text" id="afternoon1" list="courseList" placeholder="例如：美术">
+                            </div>
+                            <div class="course-input">
+                                <label>第六节 🎵</label>
+                                <input type="text" id="afternoon2" list="courseList" placeholder="例如：音乐">
+                            </div>
+                            <div class="course-input">
+                                <label>第七节 ⚽</label>
+                                <input type="text" id="afternoon3" list="courseList" placeholder="例如：体育">
+                            </div>
+                            <div class="course-input">
+                                <label>第八节 💻</label>
+                                <input type="text" id="afternoon4" list="courseList" placeholder="例如：信息技术">
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="action-buttons">
+                        <button class="btn btn-save" id="saveBtn">💾 保存课程</button>
+                        <button class="btn btn-clear" id="clearBtn">🗑️ 清空当天</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 预览面板 -->
+            <div class="preview-panel">
+                <div class="preview-header">
+                    <h2>👀 课程表预览 🌟</h2>
+                    <button class="btn btn-print" id="printBtn">🖨️ 打印课程表</button>
+                </div>
+                <div class="schedule-container" id="schedulePreview">
+                    <!-- 课程表将通过JavaScript动态生成 -->
+                </div>
+                <div class="motivation-section">
+
+                    <div class="motivation-input">
+                        <div class="motivation-controls">
+                            <textarea id="motivationText" placeholder="输入你的激励语...">学习很苦,坚持很酷</textarea>
+                            <button class="dice-btn" id="diceBtn" title="随机换一条激励语">🎲</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 课程选项列表 -->
+    <datalist id="courseList">
+        <option value="语文">
+        <option value="数学">
+        <option value="英语">
+        <option value="道德与法治">
+        <option value="历史">
+        <option value="地理">
+        <option value="物理">
+        <option value="化学">
+        <option value="生物">
+        <option value="体育与健康">
+        <option value="音乐">
+        <option value="美术">
+        <option value="信息技术">
+        <option value="劳动/综合实践活动">
+        <option value="计算机">
+        <option value="😴 休息"></option>
+    </datalist>
+
+    <!-- 打印专用区域 -->
+    <div class="print-only" id="printArea">
+        <div class="print-header">
+            <div class="print-decorations left">🦋🌸</div>
+            <div class="print-decorations right">🌺🦋</div>
+            <h1>🌈 我的课程表 🌈</h1>
+            <div class="print-owner">👧 邢付强 🎀</div>
+        </div>
+        <div id="printSchedule"></div>
+        <div class="print-footer" id="printMotivation">
+            ✨ 好好学习，天天向上！💖
+        </div>
+    </div>
+
+    <!-- 课程选择弹窗 -->
+    <div class="course-modal-overlay" id="courseModalOverlay">
+        <div class="course-modal">
+            <div class="course-modal-header">
+                <h3>📚 选择课程 ✨</h3>
+                <p id="modalCellInfo">周一 第1节</p>
+            </div>
+            <div class="course-options" id="courseOptions">
+                <!-- 课程选项将通过JavaScript动态生成 -->
+            </div>
+            <div class="course-modal-custom">
+                <label>✏️ 或者输入自定义课程：</label>
+                <input type="text" id="customCourseInput" placeholder="输入课程名称...">
+            </div>
+            <div class="course-modal-buttons">
+                <button class="btn btn-confirm" id="confirmCourseBtn">💾 确定</button>
+                <button class="btn btn-clear-cell" id="clearCellBtn">🗑️ 清空</button>
+                <button class="btn btn-cancel" id="cancelCourseBtn">❌ 取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 课程数据结构
+        const scheduleData = {
+            monday: { morning: ['', '', '', ''], afternoon: ['', '', '', ''], isRest: false },
+            tuesday: { morning: ['', '', '', ''], afternoon: ['', '', '', ''], isRest: false },
+            wednesday: { morning: ['', '', '', ''], afternoon: ['', '', '', ''], isRest: false },
+            thursday: { morning: ['', '', '', ''], afternoon: ['', '', '', ''], isRest: false },
+            friday: { morning: ['', '', '', ''], afternoon: ['', '', '', ''], isRest: false },
+            saturday: { morning: ['', '', '', ''], afternoon: ['', '', '', ''], isRest: false },
+            sunday: { morning: ['', '', '', ''], afternoon: ['', '', '', ''], isRest: false }
+        };
+
+        // 当前选中的日期
+        let currentDay = 'monday';
+
+        // 激励语
+        let motivationText = '学习很苦,坚持很酷';
+
+        // 100条适合6年级女孩的激励话术
+        const motivationQuotes = [
+            '学习很苦,坚持很酷',
+            '每一次努力，都是成长的阶梯',
+            '今天的努力，是明天的骄傲',
+            '相信自己，你可以做到',
+            '梦想在前方，努力在路上',
+            '小小的进步，也是大大的成功',
+            '做最好的自己，不负青春时光',
+            '勇敢追梦，永不放弃',
+            '每天进步一点点，就是最棒的自己',
+            '用微笑面对挑战，用努力创造奇迹',
+            '你比想象中更优秀',
+            '坚持下去，美好正在路上',
+            '学习是给自己最好的礼物',
+            '今天的汗水，是明天的彩虹',
+            '相信努力的力量',
+            '每一个困难，都是成长的机会',
+            '做一个温暖又努力的女孩',
+            '知识是最美的装饰',
+            '用心学习，快乐成长',
+            '你的努力，时光会记得',
+            '保持热爱，奔赴山海',
+            '做自己的小太阳',
+            '努力到无能为力，拼搏到感动自己',
+            '星光不问赶路人',
+            '温柔且坚定地前行',
+            '每一天都是新的开始',
+            '用知识点亮未来',
+            '做一个闪闪发光的女孩',
+            '越努力，越幸运',
+            '书山有路勤为径',
+            '学海无涯苦作舟',
+            '天道酬勤，厚积薄发',
+            '宝剑锋从磨砺出',
+            '梅花香自苦寒来',
+            '少年易学老难成',
+            '一寸光阴不可轻',
+            '黑发不知勤学早',
+            '白首方悔读书迟',
+            '读书破万卷，下笔如有神',
+            '书籍是人类进步的阶梯',
+            '知识改变命运',
+            '学习成就未来',
+            '今日事，今日毕',
+            '明日复明日，明日何其多',
+            '我生待明日，万事成蹉跎',
+            '少壮不努力，老大徒伤悲',
+            '一分耕耘，一分收获',
+            '不经一番寒彻骨，怎得梅花扑鼻香',
+            '有志者事竟成',
+            '世上无难事，只怕有心人',
+            '只要功夫深，铁杵磨成针',
+            '千里之行，始于足下',
+            '不积跬步，无以至千里',
+            '不积小流，无以成江海',
+            '锲而不舍，金石可镂',
+            '绳锯木断，水滴石穿',
+            '业精于勤，荒于嬉',
+            '行成于思，毁于随',
+            '书读百遍，其义自见',
+            '温故而知新',
+            '学而不思则罔',
+            '思而不学则殆',
+            '知之为知之，不知为不知',
+            '三人行，必有我师焉',
+            '敏而好学，不耻下问',
+            '学无止境',
+            '活到老，学到老',
+            '笨鸟先飞早入林',
+            '勤能补拙是良训',
+            '一份辛苦一份才',
+            '天才是百分之一的灵感加百分之九十九的汗水',
+            '成功的秘诀在于坚持',
+            '失败是成功之母',
+            '从哪里跌倒就从哪里爬起来',
+            '困难像弹簧，你弱它就强',
+            '自信是成功的第一秘诀',
+            '态度决定一切',
+            '细节决定成败',
+            '机会总是留给有准备的人',
+            '今天的你，比昨天更优秀',
+            '每一次尝试，都是一次成长',
+            '勇敢做自己，世界会为你让路',
+            '用努力书写精彩人生',
+            '做一个有梦想的追梦人',
+            '让优秀成为一种习惯',
+            '用行动证明自己',
+            '不怕慢，就怕站',
+            '一步一个脚印，踏实前行',
+            '心有多大，舞台就有多大',
+            '你的潜力无限',
+            '做最棒的自己',
+            '用智慧点亮人生',
+            '学习使我快乐',
+            '知识就是力量',
+            '读书使人明智',
+            '腹有诗书气自华',
+            '书香伴我成长',
+            '在书中遇见更好的自己',
+            '每一本书都是一个新世界',
+            '阅读让生活更美好'
+        ];
+
+        // 星期映射
+        const dayMap = {
+            monday: '周一',
+            tuesday: '周二',
+            wednesday: '周三',
+            thursday: '周四',
+            friday: '周五',
+            saturday: '周六',
+            sunday: '周日'
+        };
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromLocalStorage();
+            initEventListeners();
+            initModalEvents();
+            renderSchedule();
+            loadDayData(currentDay);
+        });
+
+        // 初始化事件监听
+        function initEventListeners() {
+            // 日期选择按钮
+            document.querySelectorAll('.day-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentDay = e.target.dataset.day;
+                    loadDayData(currentDay);
+                });
+            });
+
+            // 下午休息切换
+            document.getElementById('afternoonRest').addEventListener('change', (e) => {
+                const afternoonCourses = document.getElementById('afternoonCourses');
+                if (e.target.checked) {
+                    afternoonCourses.classList.add('disabled');
+                } else {
+                    afternoonCourses.classList.remove('disabled');
+                }
+            });
+
+            // 保存按钮
+            document.getElementById('saveBtn').addEventListener('click', saveDayData);
+
+            // 清空按钮
+            document.getElementById('clearBtn').addEventListener('click', clearDayData);
+
+            // 打印按钮
+            document.getElementById('printBtn').addEventListener('click', printSchedule);
+
+            // 激励语输入
+            document.getElementById('motivationText').addEventListener('input', (e) => {
+                motivationText = e.target.value.trim();
+                saveToLocalStorage();
+            });
+
+            // 骰子按钮 - 随机换激励语
+            document.getElementById('diceBtn').addEventListener('click', () => {
+                // 随机选择一条激励语
+                const randomIndex = Math.floor(Math.random() * motivationQuotes.length);
+                const randomQuote = motivationQuotes[randomIndex];
+
+                // 更新到输入框
+                document.getElementById('motivationText').value = randomQuote;
+                motivationText = randomQuote;
+
+                // 保存
+                saveToLocalStorage();
+
+                // 显示通知
+                showNotification('🎲 已换一条新的激励语！');
+            });
+
+            // 实时更新预览
+            document.querySelectorAll('.course-input input').forEach(input => {
+                input.addEventListener('input', () => {
+                    saveDayData();
+                });
+            });
+
+            document.getElementById('afternoonRest').addEventListener('change', () => {
+                saveDayData();
+            });
+        }
+
+        // 加载某一天的数据到表单
+        function loadDayData(day) {
+            const data = scheduleData[day];
+
+            // 加载上午课程
+            document.getElementById('morning1').value = data.morning[0] || '';
+            document.getElementById('morning2').value = data.morning[1] || '';
+            document.getElementById('morning3').value = data.morning[2] || '';
+            document.getElementById('morning4').value = data.morning[3] || '';
+
+            // 加载下午课程
+            document.getElementById('afternoon1').value = data.afternoon[0] || '';
+            document.getElementById('afternoon2').value = data.afternoon[1] || '';
+            document.getElementById('afternoon3').value = data.afternoon[2] || '';
+            document.getElementById('afternoon4').value = data.afternoon[3] || '';
+
+            // 加载休息状态
+            document.getElementById('afternoonRest').checked = data.isRest;
+            const afternoonCourses = document.getElementById('afternoonCourses');
+            if (data.isRest) {
+                afternoonCourses.classList.add('disabled');
+            } else {
+                afternoonCourses.classList.remove('disabled');
+            }
+        }
+
+        // 保存当前天的数据
+        function saveDayData() {
+            const data = scheduleData[currentDay];
+
+            // 保存上午课程
+            data.morning[0] = document.getElementById('morning1').value.trim();
+            data.morning[1] = document.getElementById('morning2').value.trim();
+            data.morning[2] = document.getElementById('morning3').value.trim();
+            data.morning[3] = document.getElementById('morning4').value.trim();
+
+            // 保存下午课程
+            data.isRest = document.getElementById('afternoonRest').checked;
+            if (!data.isRest) {
+                data.afternoon[0] = document.getElementById('afternoon1').value.trim();
+                data.afternoon[1] = document.getElementById('afternoon2').value.trim();
+                data.afternoon[2] = document.getElementById('afternoon3').value.trim();
+                data.afternoon[3] = document.getElementById('afternoon4').value.trim();
+            }
+
+            // 保存到本地存储
+            saveToLocalStorage();
+
+            // 更新预览
+            renderSchedule();
+
+            // 显示保存提示
+            showNotification('✅ 保存成功！');
+        }
+
+        // 清空当前天的数据
+        function clearDayData() {
+            // if (confirm(`确定要清空${dayMap[currentDay]}的所有课程吗？`)) {
+            scheduleData[currentDay] = {
+                morning: ['', '', '', ''],
+                afternoon: ['', '', '', ''],
+                isRest: false
+            };
+
+            loadDayData(currentDay);
+            saveToLocalStorage();
+            renderSchedule();
+            showNotification('🗑️ 已清空！');
+            // }
+        }
+
+        // 渲染课程表
+        function renderSchedule() {
+            const container = document.getElementById('schedulePreview');
+
+            let html = '<table class="schedule-table">';
+
+            // 表头
+            html += '<thead><tr>';
+            html += '<th>时间</th>';
+            for (let day in dayMap) {
+                html += `<th>${dayMap[day]}</th>`;
+            }
+            html += '</tr></thead>';
+
+            // 表体
+            html += '<tbody>';
+
+            // 上午课程
+            for (let i = 0; i < 4; i++) {
+                html += '<tr>';
+                html += `<td><strong>第${i + 1}节</strong></td>`;
+                for (let day in scheduleData) {
+                    const course = scheduleData[day].morning[i];
+                    const cellClass = course ? 'course-cell clickable-cell' : 'empty-cell clickable-cell';
+                    const displayText = course || '-';
+                    html += `<td class="${cellClass}" data-day="${day}" data-period="morning" data-index="${i}">${displayText}</td>`;
+                }
+                html += '</tr>';
+            }
+
+            // 下午课程 (4节)
+            for (let i = 0; i < 4; i++) {
+                html += '<tr>';
+                html += `<td><strong>第${i + 5}节</strong></td>`;
+                for (let day in scheduleData) {
+                    if (scheduleData[day].isRest) {
+                        if (i === 1) {
+                            html += `<td class="rest-cell" rowspan="4">😴 休息</td>`;
+                        } else if (i === 0 || i === 2 || i === 3) {
+                            continue;
+                        }
+                    } else {
+                        const course = scheduleData[day].afternoon[i];
+                        const cellClass = course ? 'course-cell clickable-cell' : 'empty-cell clickable-cell';
+                        const displayText = course || '-';
+                        html += `<td class="${cellClass}" data-day="${day}" data-period="afternoon" data-index="${i}">${displayText}</td>`;
+                    }
+                }
+                html += '</tr>';
+            }
+
+            html += '</tbody></table>';
+
+            container.innerHTML = html;
+
+            // 添加单元格点击事件
+            addCellClickListeners();
+        }
+
+        // 弹窗相关变量
+        let currentEditCell = null; // 当前编辑的单元格信息
+
+        // 课程列表
+        const courseList = [
+            '语文', '数学', '英语', '道德与法治', '历史', '地理',
+            '物理', '化学', '生物', '体育与健康', '音乐', '美术',
+            '信息技术', '劳动/综合实践活动', '计算机'
+        ];
+
+        // 添加单元格点击事件
+        function addCellClickListeners() {
+            document.querySelectorAll('.clickable-cell').forEach(cell => {
+                cell.addEventListener('click', () => {
+                    const day = cell.dataset.day;
+                    const period = cell.dataset.period;
+                    const index = parseInt(cell.dataset.index);
+                    openCourseModal(day, period, index);
+                });
+            });
+        }
+
+        // 打开课程选择弹窗
+        function openCourseModal(day, period, index) {
+            currentEditCell = { day, period, index };
+
+            // 更新弹窗标题信息
+            const periodNum = period === 'morning' ? index + 1 : index + 5;
+            document.getElementById('modalCellInfo').textContent = `${dayMap[day]} 第${periodNum}节`;
+
+            // 生成课程选项
+            const optionsContainer = document.getElementById('courseOptions');
+            let optionsHTML = '';
+            courseList.forEach(course => {
+                optionsHTML += `<div class="course-option" data-course="${course}">${course}</div>`;
+            });
+            // 添加休息选项
+            optionsHTML += `<div class="course-option rest-option" data-course="😴 休息">😴 休息</div>`;
+            optionsContainer.innerHTML = optionsHTML;
+
+            // 添加课程选项点击事件
+            document.querySelectorAll('.course-option').forEach(option => {
+                // 单击：填充到输入框
+                option.addEventListener('click', () => {
+                    const course = option.dataset.course;
+                    document.getElementById('customCourseInput').value = course;
+                });
+                // 双击：直接选中并确认
+                option.addEventListener('dblclick', () => {
+                    const course = option.dataset.course;
+                    document.getElementById('customCourseInput').value = course;
+                    confirmCourseSelection();
+                });
+            });
+
+            // 设置当前值到输入框
+            const currentValue = scheduleData[day][period][index] || '';
+            document.getElementById('customCourseInput').value = currentValue;
+
+            // 显示弹窗
+            document.getElementById('courseModalOverlay').classList.add('active');
+
+            // 聚焦到输入框
+            setTimeout(() => {
+                document.getElementById('customCourseInput').focus();
+            }, 100);
+        }
+
+        // 关闭课程选择弹窗
+        function closeCourseModal() {
+            document.getElementById('courseModalOverlay').classList.remove('active');
+            currentEditCell = null;
+        }
+
+        // 确认课程选择
+        function confirmCourseSelection() {
+            if (!currentEditCell) return;
+
+            const { day, period, index } = currentEditCell;
+            const newCourse = document.getElementById('customCourseInput').value.trim();
+
+            // 更新数据
+            scheduleData[day][period][index] = newCourse;
+
+            // 保存到本地存储
+            saveToLocalStorage();
+
+            // 重新渲染
+            renderSchedule();
+
+            // 同步更新配置面板的输入框（如果当前编辑的是选中的日期）
+            if (day === currentDay) {
+                loadDayData(currentDay);
+            }
+
+            // 关闭弹窗
+            closeCourseModal();
+
+            // 显示通知
+            showNotification('✅ 课程已更新！');
+        }
+
+        // 清空单元格
+        function clearCellCourse() {
+            if (!currentEditCell) return;
+
+            const { day, period, index } = currentEditCell;
+
+            // 清空数据
+            scheduleData[day][period][index] = '';
+
+            // 保存到本地存储
+            saveToLocalStorage();
+
+            // 重新渲染
+            renderSchedule();
+
+            // 同步更新配置面板
+            if (day === currentDay) {
+                loadDayData(currentDay);
+            }
+
+            // 关闭弹窗
+            closeCourseModal();
+
+            // 显示通知
+            showNotification('🗑️ 已清空该节课！');
+        }
+
+        // 初始化弹窗事件
+        function initModalEvents() {
+            // 确认按钮
+            document.getElementById('confirmCourseBtn').addEventListener('click', confirmCourseSelection);
+
+            // 清空按钮
+            document.getElementById('clearCellBtn').addEventListener('click', clearCellCourse);
+
+            // 取消按钮
+            document.getElementById('cancelCourseBtn').addEventListener('click', closeCourseModal);
+
+            // 点击遮罩层关闭
+            document.getElementById('courseModalOverlay').addEventListener('click', (e) => {
+                if (e.target.id === 'courseModalOverlay') {
+                    closeCourseModal();
+                }
+            });
+
+            // 回车确认
+            document.getElementById('customCourseInput').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    confirmCourseSelection();
+                } else if (e.key === 'Escape') {
+                    closeCourseModal();
+                }
+            });
+        }
+
+        // 打印课程表
+        function printSchedule() {
+            // 复制课程表到打印区域
+            const scheduleHTML = document.getElementById('schedulePreview').innerHTML;
+            document.getElementById('printSchedule').innerHTML = scheduleHTML;
+
+            // 设置激励语
+            const motivation = motivationText || '学习很苦,坚持很酷';
+            document.getElementById('printMotivation').textContent = `✨ ${motivation} 💖`;
+
+            // 触发打印
+            window.print();
+        }
+
+        // 保存到本地存储
+        function saveToLocalStorage() {
+            const dataToSave = {
+                scheduleData: scheduleData,
+                motivationText: motivationText
+            };
+            localStorage.setItem('scheduleData_mengzhongqi', JSON.stringify(dataToSave));
+        }
+
+        // 从本地存储加载
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('scheduleData_mengzhongqi');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    // 兼容旧版本数据
+                    if (parsed.scheduleData) {
+                        Object.assign(scheduleData, parsed.scheduleData);
+                        motivationText = parsed.motivationText || '学习很苦,坚持很酷';
+                    } else {
+                        // 旧版本数据格式
+                        Object.assign(scheduleData, parsed);
+                    }
+                    // 加载激励语到输入框
+                    document.getElementById('motivationText').value = motivationText;
+                } catch (e) {
+                    console.error('加载数据失败:', e);
+                }
+            }
+        }
+
+        // 显示通知
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #FF69B4 0%, #C4A7E7 100%);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 20px;
+                box-shadow: 0 5px 20px rgba(255, 105, 180, 0.4);
+                z-index: 10000;
+                font-weight: 700;
+                animation: slideInRight 0.3s ease;
+                border: 2px solid white;
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
